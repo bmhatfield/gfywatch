@@ -1,14 +1,14 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/bmhatfield/gfywatch/overwatch"
 
 	"github.com/bmhatfield/gfywatch/files"
 	"github.com/bmhatfield/gfywatch/gfycat"
@@ -16,37 +16,58 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-func loadClientConfig(path string) (*gfycat.GFYClientGrant, error) {
-	file, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
+func contains(keywords []string, keyword string) bool {
+	for _, word := range keywords {
+		if word == keyword {
+			return true
+		}
 	}
 
-	grant := &gfycat.GFYClientGrant{}
-
-	err = json.Unmarshal(file, grant)
-	if err != nil {
-		return nil, err
-	}
-
-	return grant, nil
+	return false
 }
 
 func tagsFromTitle(title string) []string {
-	tags := strings.Split(title, " ")
+	keywords := strings.Split(strings.Title(title), " ")
+	tags := []string{"Overwatch", "Awesome Play", "Awesome"}
+
+	heroTags := overwatch.TagsForHero(keywords)
+	tags = append(tags, heroTags...)
+
+	for index, word := range keywords {
+		switch word {
+		case "Solo", "Single", "Double", "Triple", "Quadruple", "Quintuple", "Sextuple":
+			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]))
+
+		case "1x", "2x", "3x", "4x", "5x", "6x":
+			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]))
+
+		case "Potg":
+			tags = append(tags, "POTG")
+
+		case "On", "The", "Go":
+			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]))
+
+		case "Boop":
+			tags = append(tags, "Boop", "Satisfying", "See You Next Fall")
+		}
+	}
+
+	if !contains(keywords, "Potg") && !contains(keywords, "Highlight") {
+		tags = append(tags, "Highlight")
+	}
 
 	return tags
 }
 
 func metadataFromFilename(filepath string) *gfycat.UploadFile {
-	filename := "lucio double boop potg_17-11-08_23-38-28.mp4"
+	filename := path.Base(filepath)
 
 	fileparts := strings.Split(filename, "_")
 	title := strings.Title(fileparts[0])
 
 	return &gfycat.UploadFile{
 		Title:       title,
-		Description: "Overwatch POTG",
+		Description: "",
 		Tags:        tagsFromTitle(title),
 		NoMd5:       true,
 	}
@@ -94,7 +115,7 @@ func handleNewUpload(grant *gfycat.GFYClientGrant, filepath string) {
 }
 
 func main() {
-	grant, err := loadClientConfig("grant.json")
+	grant, err := gfycat.NewClientGrantFromFile("grant.json")
 
 	if err != nil {
 		log.Printf("Unable to load credentials: %s\n", err)

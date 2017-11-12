@@ -72,7 +72,7 @@ type UploadFile struct {
 
 // LocalUpload uploads a local file to GFYCat
 func (gfy *GFYClient) LocalUpload(Filepath string, Upload *UploadFile) (*FileDrop, error) {
-	body, err := typeToJSONReader(Upload)
+	body, err := ToJSON(Upload)
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +84,8 @@ func (gfy *GFYClient) LocalUpload(Filepath string, Upload *UploadFile) (*FileDro
 	}
 
 	activeUpload := &FileDrop{}
-
-	err = responseToJSON(resp, activeUpload)
+	apiresp := APIResponse(*resp)
+	err = apiresp.ToType(activeUpload)
 	if err != nil {
 		return nil, err
 	}
@@ -147,15 +147,13 @@ func (gfy *GFYClient) LocalUpload(Filepath string, Upload *UploadFile) (*FileDro
 func (gfy *GFYClient) UploadStatus(activeUpload *FileDrop) (*UploadStatus, error) {
 	path := fmt.Sprintf("%s/%s/%s", BaseURI, "gfycats/fetch/status", activeUpload.GfyName)
 	resp, err := gfy.request("GET", path, nil)
-
 	if err != nil {
 		return nil, err
 	}
 
 	status := &UploadStatus{}
-
-	err = responseToJSON(resp, status)
-
+	apiresp := APIResponse(*resp)
+	err = apiresp.ToType(status)
 	if err != nil {
 		return nil, err
 	}
