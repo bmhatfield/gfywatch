@@ -49,7 +49,7 @@ Here's some tips you can follow to get the most out of this:
   * It has a few other niceties about the way it tags videos.
 
 > TODO: Additional Tag analysis
-
+> TODO: Optionally cut trailing overwatch bumper.
 
 ## Notifications
 
