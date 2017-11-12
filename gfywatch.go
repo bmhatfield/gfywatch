@@ -28,7 +28,7 @@ func contains(keywords []string, keyword string) bool {
 
 func tagsFromTitle(title string) []string {
 	keywords := strings.Split(strings.Title(title), " ")
-	tags := []string{"Overwatch", "Awesome Play", "Awesome"}
+	tags := []string{"Overwatch", "Awesome"}
 
 	heroTags := overwatch.TagsForHero(keywords)
 	tags = append(tags, heroTags...)
@@ -132,7 +132,7 @@ func main() {
 	for {
 		select {
 		case event := <-watcher.Events:
-			if event.Op == fsnotify.Create {
+			if event.Op == fsnotify.Create && path.Ext(event.Name) == ".mp4" {
 				log.Println(fmt.Sprintf("New file found: %s", event.Name))
 
 				handleNewUpload(grant, event.Name)
