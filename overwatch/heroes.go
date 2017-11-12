@@ -13,21 +13,21 @@ func TagsForHero(keywords []string) []string {
 		case "McCree", "Mccree":
 			tags = append(tags, "McCree", "DPS")
 
-		case "Soldier: 76", "Soldier":
+		case "Soldier76", "Soldier":
 			tags = append(tags, "Soldier: 76", "Soldier", "DPS")
 
 		case "Tracer":
-			tags = append(tags, word, "DPS", "Annoying", "Gotta Go Fast")
+			tags = append(tags, word, "DPS", "Annoying", "Gotta Go Fast", "Here You Go")
 
 		case "Pharah":
-			tags = append(tags, word, "DPS", "Attac", "Protec", "Respec", "Justice Rains From Above")
+			tags = append(tags, word, "DPS", "Attac", "Protec", "Respec", "Justice Rains From Above", "Rocket Lady")
 
 		// Defense
 		case "Bastion", "Hanzo", "Junkrat", "Mei":
 			tags = append(tags, word, "Defense")
 
 		case "Torbjörn", "Torb", "Torbjorn":
-			tags = append(tags, "Torbjörn", "Torb", "Defense")
+			tags = append(tags, "Torbjörn", "Torb", "Defense", "Turrets", "Hammers")
 
 		case "Widowmaker", "Widow":
 			tags = append(tags, "Widowmaker", "Defense")
@@ -40,29 +40,29 @@ func TagsForHero(keywords []string) []string {
 			tags = append(tags, word, "Tank")
 
 		case "Reinhardt", "Rein":
-			tags = append(tags, "Reinhardt", "Rein", "Tank")
+			tags = append(tags, "Reinhardt", "Rein", "Tank", "Hammer", "I Live For This")
 
 		case "Roadhog", "Hog":
-			tags = append(tags, "Roadhog", "Hog", "Tank")
+			tags = append(tags, "Roadhog", "Hog", "Tank", "Hook")
 
 		// Support
 		case "Ana":
-			tags = append(tags, word, "Support", "Granny")
+			tags = append(tags, word, "Support", "Granny", "Healer")
 
 		case "Lucio", "Lúcio":
-			tags = append(tags, "Lucio", "Lúcio", "Support")
+			tags = append(tags, "Lucio", "Lúcio", "Support", "Turn It Up", "Healer")
 
 		case "Mercy":
-			tags = append(tags, word, "Support", "Angel", "Valkryie")
+			tags = append(tags, word, "Support", "Angel", "Valkryie", "Healer")
 
 		case "Moira":
-			tags = append(tags, word, "Support")
+			tags = append(tags, word, "Support", "Healer")
 
 		case "Symmetra", "Symm":
 			tags = append(tags, word, "Support", "Turrets", "Microwave")
 
 		case "Zenyatta", "Zen":
-			tags = append(tags, word, "Support", "Orbs")
+			tags = append(tags, "Zenyatta", "Zen", "Support", "Orbs", "Healer")
 		}
 	}
 

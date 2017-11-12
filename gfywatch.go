@@ -35,10 +35,13 @@ func tagsFromTitle(title string) []string {
 
 	for index, word := range keywords {
 		switch word {
-		case "Solo", "Single", "Double", "Triple", "Quadruple", "Quintuple", "Sextuple":
+		case "Solo", "Single", "Double", "Quadruple", "Quintuple", "Sextuple":
 			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]))
 
-		case "1x", "2x", "3x", "4x", "5x", "6x":
+		case "Triple", "3x":
+			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]), "Three's a Crowd")
+
+		case "1x", "2x", "4x", "5x", "6x":
 			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]))
 
 		case "Potg":
