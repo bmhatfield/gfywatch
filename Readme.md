@@ -1,7 +1,7 @@
 # GfyWatch
 > Upload Overwatch videos to GfyWatch to share with your friends!
 
-![Tracer Being Annoying](https://gfycat.com/SociableSlowGrunion)
+![Tracer Being Annoying](http://giant.gfycat.com/SociableSlowGrunion.webm)
 
 ## Install
 
