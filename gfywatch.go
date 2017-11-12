@@ -47,7 +47,7 @@ func tagsFromTitle(title string) []string {
 		case "Potg":
 			tags = append(tags, "POTG")
 
-		case "On", "The", "Go":
+		case "On", "The", "Go", "No":
 			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]))
 
 		case "Boop":
@@ -70,7 +70,7 @@ func metadataFromFilename(filepath string) *gfycat.UploadFile {
 
 	return &gfycat.UploadFile{
 		Title:       title,
-		Description: "",
+		Description: "Overwatch Play! Automatically uploaded by GfyWatch (github.com/bmhatfield/gfywatch)",
 		Tags:        tagsFromTitle(title),
 		NoMd5:       true,
 	}
@@ -125,7 +125,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	watcher := files.WatchForNew("/Users/bhatfield/Desktop")
+	watcher := files.WatchForNew(".")
 	defer watcher.Close()
 
 	fmt.Println("Watching for new files...")
