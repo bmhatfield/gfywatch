@@ -96,6 +96,8 @@ func watchUploadStatus(client *gfycat.GFYClient, current *gfycat.FileDrop) {
 }
 
 func handleNewUpload(grant *gfycat.GFYClientGrant, filepath string) {
+	waitForWriteComplete(filepath)
+
 	client, err := gfycat.NewGFYClient(grant)
 
 	if err != nil {
@@ -117,6 +119,30 @@ func handleNewUpload(grant *gfycat.GFYClientGrant, filepath string) {
 	go watchUploadStatus(client, current)
 }
 
+func waitForWriteComplete(filepath string) {
+	watcher := files.Watch(filepath)
+	defer watcher.Close()
+
+	timeLastWritten := time.Now()
+	fiveSeconds := time.Duration(5 * time.Second)
+
+	for timeLastWritten.Add(fiveSeconds).Before(time.Now()) {
+		select {
+		case event := <-watcher.Events:
+			if event.Op == fsnotify.Write {
+				log.Println("Detected Write, extending timeout...")
+				time.Sleep(100 * time.Millisecond)
+				timeLastWritten = time.Now()
+			}
+		case err := <-watcher.Errors:
+			if err != nil {
+				log.Println("Error watching for events:", err)
+			}
+		}
+	}
+
+}
+
 func main() {
 	grant, err := gfycat.NewClientGrantFromFile("grant.json")
 
@@ -125,17 +151,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	watcher := files.WatchForNew(".")
+	watcher := files.Watch(".")
 	defer watcher.Close()
 
-	fmt.Println("Watching for new files...")
+	log.Println("Watching for new files...")
+
+	tracker := files.NewTracker(5)
+
 	for {
 		select {
 		case event := <-watcher.Events:
 			if event.Op == fsnotify.Create && path.Ext(event.Name) == ".mp4" {
-				log.Println(fmt.Sprintf("New file found: %s", event.Name))
-
-				handleNewUpload(grant, event.Name)
+				if !tracker.In(event.Name) {
+					tracker.Add(event.Name)
+					go handleNewUpload(grant, event.Name)
+				}
 			}
 		case err := <-watcher.Errors:
 			if err != nil {

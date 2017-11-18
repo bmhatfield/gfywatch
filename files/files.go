@@ -7,8 +7,8 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-// WatchForNew tracks a directory for new files
-func WatchForNew(path string) *fsnotify.Watcher {
+// Watch opens a new FSNotify watch for the given path
+func Watch(path string) *fsnotify.Watcher {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
