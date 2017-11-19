@@ -124,14 +124,14 @@ func waitForWriteComplete(filepath string) {
 	defer watcher.Close()
 
 	timeLastWritten := time.Now()
-	fiveSeconds := time.Duration(5 * time.Second)
+	waitDelay := time.Duration(5 * time.Second)
 
-	for timeLastWritten.Add(fiveSeconds).Before(time.Now()) {
+	log.Println("Waiting for writes to complete...")
+	for timeLastWritten.Add(waitDelay).After(time.Now()) {
 		select {
 		case event := <-watcher.Events:
 			if event.Op == fsnotify.Write {
 				log.Println("Detected Write, extending timeout...")
-				time.Sleep(100 * time.Millisecond)
 				timeLastWritten = time.Now()
 			}
 		case err := <-watcher.Errors:
@@ -139,6 +139,9 @@ func waitForWriteComplete(filepath string) {
 				log.Println("Error watching for events:", err)
 			}
 		}
+
+		// Slow loop down to avoid hot-looping
+		time.Sleep(100 * time.Millisecond)
 	}
 
 }
@@ -164,6 +167,7 @@ func main() {
 			if event.Op == fsnotify.Create && path.Ext(event.Name) == ".mp4" {
 				if !tracker.In(event.Name) {
 					tracker.Add(event.Name)
+					log.Println("New file detected:", event.Name)
 					go handleNewUpload(grant, event.Name)
 				}
 			}
