@@ -18,6 +18,8 @@ func (gfy *APIResponse) ToType(destination interface{}) error {
 		return err
 	}
 
+	//log.Printf("Response Body: %s", string(responseBody))
+
 	err = json.Unmarshal(responseBody, destination)
 	if err != nil {
 		return err

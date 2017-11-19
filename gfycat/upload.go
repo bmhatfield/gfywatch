@@ -16,14 +16,24 @@ type FileDrop struct {
 	Secret  string `json:"secret"`
 }
 
+// UploadError represents an upload error message
+type UploadError struct {
+	Code        string `json:"code"`
+	Description string `json:"description"`
+}
+
 // UploadStatus represents an inflight upload status response
 type UploadStatus struct {
 	// While encoding or not found
-	Task string `json:"task"`
-	Time int    `json:"time"`
+	Task     string  `json:"task"`
+	Time     int     `json:"time"`
+	Progress float32 `json:"progress,string"`
 
 	// When complete
 	GfyName string `json:"gfyname"`
+
+	// If Errored
+	ErrorMessage UploadError `json:"errorMessage"`
 }
 
 // Caption represents in-gif captions
@@ -158,5 +168,12 @@ func (gfy *GFYClient) UploadStatus(activeUpload *FileDrop) (*UploadStatus, error
 		return nil, err
 	}
 
-	return status, nil
+	switch status.Task {
+	case "error":
+		return nil, fmt.Errorf("Upload resulted in error: %s", status.ErrorMessage.Description)
+	case "encoding", "complete", "NotFoundo":
+		return status, nil
+	default:
+		return nil, fmt.Errorf("Unexpected upload status: %s", status.Task)
+	}
 }

@@ -51,11 +51,17 @@ func tagsFromTitle(title string) []string {
 			tags = append(tags, fmt.Sprintf("%s %s", word, keywords[index+1]))
 
 		case "Boop":
-			tags = append(tags, "Boop", "Satisfying", "See You Next Fall")
+			tags = append(tags, "Boop", "Satisfying", "Have a Nice Trip", "See You Next Fall")
+
+		case "Bomb":
+			tags = append(tags, "Go Boom")
+
+		case "Backfills", "Backfill":
+			tags = append(tags, "Better Late Than Never")
 		}
 	}
 
-	if !contains(keywords, "Potg") && !contains(keywords, "Highlight") {
+	if !contains(tags, "POTG") && !contains(tags, "Highlight") {
 		tags = append(tags, "Highlight")
 	}
 
@@ -90,6 +96,10 @@ func watchUploadStatus(client *gfycat.GFYClient, current *gfycat.FileDrop) {
 			fmt.Println("Error checking for upload status: ", err)
 			return
 		}
+
+		if status.Task == "encoding" && status.Progress != 0 {
+			log.Printf("Encoding is %d%% complete", int(status.Progress*100))
+		}
 	}
 
 	notifications.ProcessingComplete(current.GfyName)
@@ -120,30 +130,31 @@ func handleNewUpload(grant *gfycat.GFYClientGrant, filepath string) {
 }
 
 func waitForWriteComplete(filepath string) {
-	watcher := files.Watch(filepath)
+	watcher := files.Watch(path.Dir(filepath))
 	defer watcher.Close()
 
-	timeLastWritten := time.Now()
-	waitDelay := time.Duration(5 * time.Second)
+	timer := time.NewTimer(time.Duration(300 * time.Second))
 
-	log.Println("Waiting for writes to complete...")
-	for timeLastWritten.Add(waitDelay).After(time.Now()) {
+	log.Println("Waiting 5 minutes for rendering to complete...")
+	for {
 		select {
 		case event := <-watcher.Events:
-			if event.Op == fsnotify.Write {
-				log.Println("Detected Write, extending timeout...")
-				timeLastWritten = time.Now()
+			if event.Op == fsnotify.Write && event.Name == filepath {
+				log.Println("Detected final write of file, reducing wait...")
+				timer.Reset(time.Duration(10 * time.Second))
 			}
+
 		case err := <-watcher.Errors:
 			if err != nil {
 				log.Println("Error watching for events:", err)
+				return
 			}
+
+		case <-timer.C:
+			log.Println("Finished waiting for writes")
+			return
 		}
-
-		// Slow loop down to avoid hot-looping
-		time.Sleep(100 * time.Millisecond)
 	}
-
 }
 
 func main() {

@@ -18,7 +18,7 @@ var notify *notificator.Notificator
 
 // UploadStarted notifies that an upload has begun
 func UploadStarted(filename string) {
-	message := fmt.Sprintf("File '%s' detected. Uploading to Gfycat...", filename)
+	message := fmt.Sprintf("File '%s' ready. Uploading to Gfycat...", filename)
 	notify.Push("Upload started!", message, "icon.png", notificator.UR_NORMAL)
 	log.Println(message)
 }
