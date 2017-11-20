@@ -1,7 +1,13 @@
 # GfyWatch
 > Upload Overwatch videos to GfyWatch to share with your friends!
 
-![Tracer Being Annoying](http://giant.gfycat.com/SociableSlowGrunion.webm)
+This is a very small program that sits in the background and watches your Overwatch "videos" directory (on my machine, `Documents\Overwatch\videos\overwatch`), uploading new files as they arrive.
+
+I wrote this to streamline my personal workflow around "get POTG, manually upload to Gfycat".
+
+This tool is curently _very beta_ - I have it working well for me, but your feedback would be most valuable.
+
+Read on for more information about features to come.
 
 ## Install
 
@@ -15,7 +21,7 @@ and then
 
 or download from the releases page.
 
-> TODO: No tests lol
+> TODO: This tool needs _way_ more tests.
 
 ## Configure
 
@@ -31,9 +37,13 @@ Currently GfyWatch is configured to watch whatever directory it's running in. Yo
 }
 ```
 
+You'll need (for now) API credentials from Gfycat: https://developers.gfycat.com/signup/#/apiform - I realize this is annoying but is currently required.
+
+> TODO: Make it easier to sign in to GfyWatch
+
 > TODO: Add `flag` support to GfyWatch and allow the directory and config file to be specified explicitly.
 
-> Note: Gfywatch only watches for `.mp4` files at the moment.
+> Note: Gfywatch only watches for `.mp4` files at the moment - it could also support `.webm` trivially.
 
 ## Naming, Tagging, Etc
 
@@ -49,6 +59,7 @@ Here's some tips you can follow to get the most out of this:
   * It has a few other niceties about the way it tags videos.
 
 > TODO: Additional Tag analysis
+
 > TODO: Optionally cut trailing overwatch bumper.
 
 ## Notifications
