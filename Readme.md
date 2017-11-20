@@ -9,7 +9,13 @@ This tool is curently _very beta_ - I have it working well for me, but your feed
 
 Read on for more information about features to come.
 
-## Install
+## Install Current Release Binary
+
+Head over to the [Releases](https://github.com/bmhatfield/gfywatch/releases) page and download the current version!
+
+I've currently been building for Mac and Windows and publishing the binaries.
+
+## Install from Source
 
 Either:
 
@@ -18,8 +24,6 @@ Either:
 and then
 
 `go build`
-
-or download from the releases page.
 
 > TODO: This tool needs _way_ more tests.
 
