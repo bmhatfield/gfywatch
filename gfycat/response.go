@@ -21,11 +21,8 @@ func (gfy *APIResponse) ToType(destination interface{}) error {
 	//log.Printf("Response Body: %s", string(responseBody))
 
 	err = json.Unmarshal(responseBody, destination)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 // ToJSON will encode an object to it's JSON representation and provide it as a io.Reader
