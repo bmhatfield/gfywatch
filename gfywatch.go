@@ -58,7 +58,7 @@ func waitForWriteComplete(filepath string) {
 	watcher := files.Watch(path.Dir(filepath))
 	defer watcher.Close()
 
-	timer := time.NewTimer(time.Duration(300 * time.Second))
+	timer := time.NewTimer(300 * time.Second)
 
 	log.Println("Waiting 5 minutes for rendering to complete...")
 	for {
@@ -66,7 +66,7 @@ func waitForWriteComplete(filepath string) {
 		case event := <-watcher.Events:
 			if event.Op == fsnotify.Write && event.Name == filepath {
 				log.Println("Detected final write of file, reducing wait...")
-				timer.Reset(time.Duration(10 * time.Second))
+				timer.Reset(10 * time.Second)
 			}
 
 		case err := <-watcher.Errors:
